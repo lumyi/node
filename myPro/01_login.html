@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>登入</h2>
+    <div>
+        用户：<input type="text" id="uname">
+    </div>
+    <div>
+        密码：<input type="password" id="upwd">
+    </div>
+    <input type="button" value="登入" onclick="login()">
+    <script>
+        function login(){
+            var xhr=new XMLHttpRequest();
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState==4&xhr.status==200){
+                    var result = xhr.responseText;
+                    alert(result);
+                }
+            };
+            var url='/myPro/login';
+            xhr.open('post',url,true);
+            xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+            var formData='uname='+uname.value+'&upwd='+upwd.value;
+            xhr.send(formData);
+        }
+    </script>
+</body>
+
+</html>

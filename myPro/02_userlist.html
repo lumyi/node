@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body onload="loadUsers()">
+    <table border="1px">
+        <thead>
+            <th>登入名称</th>
+            <th>电子邮箱</th>
+            <th>联系方式</th>
+            <th>用户姓名</th>
+            <th>用户性别</th>
+            <th>操作</th>
+        </thead>
+        <tbody id="d1"></tbody>
+    </table>
+    <script>
+        // 根据uid删除一个用户
+        function deleteUser(uid){
+            var xhr=new XMLHttpRequest();
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState==4&xhr.status==200){
+                    var result=xhr.responseText;
+                    if(result=='1'){
+                        loadUsers();
+                    }
+                }
+            }
+            var url='/myPro/deleteUser?uid='+uid;
+            xhr.open('get',url,true);
+            xhr.send();
+        }
+        
+        // 加载所有的用户
+        function loadUsers(){
+            var xhr=new XMLHttpRequest();
+            xhr.onreadystatechange=function(){
+               
+                if(xhr.readyState==4&xhr.status==200){
+                    var result=xhr.responseText;
+                    var arr=JSON.parse(result);
+                    var htmlcode='';
+                    for(var i=0;i<arr.length;i++){
+                        var uname=arr[i].uname;
+                        var email=arr[i].email;
+                        var phone=arr[i].phone;
+                        var user_name=arr[i].user_name;
+                        var gender=arr[i].gender;
+                        var uid=arr[i].uid;
+                        if(gender==1){
+                            gender='男';
+                        }else if(gender==0){
+                            gender='女';
+                        }else{
+                            gender='不详';
+                        }
+                        // a标签中药添加删除和修改的js代码
+                        htmlcode+='<tr><td>'+uname+'</td><td>'+email+'</td><td>'+phone+'</td><td>'+user_name+'</td><td>'+gender+'</td><td><a href="javascript:deleteUser('+uid+')">删除</a><a href="04_selectUser.html?uid='+uid+'">修改</a></td></tr>'
+                    }
+                    d1.innerHTML=htmlcode;
+                }
+            }
+            xhr.open('get','/myPro/userlist',true);
+            xhr.send();
+        }
+    </script>    
+</body>
+</html>

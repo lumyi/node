@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body onload="selectUser()">
+    <!-- 
+    <div>
+        uid: <input type="text" id="uid">
+        <button onclick="selectUser()">查询</button>
+    </div> 
+    -->
+    <h2>修改页面</h2>
+    <div>
+        uname: <input type="text" id="uname">
+    </div>
+    <div>
+        upwd: <input type="password" id="upwd">
+    </div>
+    <div>
+        email: <input type="email" id="email">
+    </div>
+    <div>
+        phone: <input type="tel" id="phone">
+    </div>
+    <div>
+        user_name: <input type="text" id="user_name">
+    </div>
+    <div>
+        gender: <input type="radio" name="gender" id="man" value="1"><label for="man">男</label>
+        <input type="radio" name="gender" id="female" value="0"><label for="female">女</label>
+    </div>
+    <button onclick="updateUser()">修改</button>
+
+    <script>
+        var uid='';
+        // 修改按钮
+        function updateUser(){
+            var xhr=new XMLHttpRequest();
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState==4&xhr.status==200){
+                    var result=xhr.responseText;
+                    if(result=='1'){
+                        alert('修改成功');
+                        location.href='http://127.0.0.1:3000/02_userlist.html';
+                    }else{
+                        alert('修改失败');
+                    }
+                }
+            }
+            var url='/myPro/updateUser'
+            xhr.open('post',url,true);
+            xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+            var gender='';
+            if(man.checked){
+                gender='1';
+            }else if(female.checked){
+                gender='0';
+            }
+            var formData="uname="+uname.value+"&upwd="+upwd.value+"&email="+email.value+"&phone="+phone.value+"&user_name="+user_name.value+"&gender="+gender+"&uid="+uid;
+            xhr.send(formData);
+        }
+        // 显示修改页面
+        function selectUser(){
+            // 获取当前url中的参数uid
+            var urlParams=new URLSearchParams(location.search);
+            uid=urlParams.get('uid');
+            // ajax
+            var xhr=new XMLHttpRequest();
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState==4&xhr.status==200){
+                    var result=xhr.responseText;
+                    if(result=='0'){
+                        alert('uid为空');
+                        return;
+                    }else if(result=='1'){
+                        alert('uid不存在,没有查询到信息');
+                        return;
+                    }
+                    var user=JSON.parse(result);
+                    uname.value=user.uname;
+                    upwd.value=user.upwd;
+                    email.value=user.email;
+                    phone.value=user.phone;
+                    user_name.value=user.user_name;
+                    if(user.gender==1){
+                        man.checked='checked';
+                    }else if(user.gender==0){
+                        female.checked='checked';
+                    }else{
+                        return;
+                    }
+                }
+            }
+            var url='/myPro/selectUser?uid='+uid;
+            xhr.open('get',url,true);
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
